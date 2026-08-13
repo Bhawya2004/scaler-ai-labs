@@ -82,12 +82,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(participants__icontains=participant)
 
         # Filter by date range
-        start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', None)
-        if start_date:
-            queryset = queryset.filter(meeting_date__gte=start_date)
-        if end_date:
-            queryset = queryset.filter(meeting_date__lte=end_date)
+        # Filter by user_email / workspace scoping
+        user_email = self.request.query_params.get('user_email', None)
+        if user_email:
+            queryset = queryset.filter(user_email__iexact=user_email)
+
+        workspace = self.request.query_params.get('workspace', None)
+        if workspace:
+            queryset = queryset.filter(workspace__iexact=workspace)
 
         return queryset
 
@@ -96,11 +98,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        transcript_content = serializer.validated_data.pop('transcript_content', None)
+        transcript_content = serializer.validated_data.pop('transcript_content', None) or serializer.validated_data.pop('transcript_text', None)
         auto_generate = serializer.validated_data.pop('auto_generate_summary', True)
 
+        # Get user scoping details
+        user_email = request.data.get('user_email') or request.query_params.get('user_email') or 'bhawya@scaler.com'
+        workspace = request.data.get('workspace') or 'Scaler AI Labs'
+
         # Create meeting instance
-        meeting = serializer.save()
+        meeting = serializer.save(user_email=user_email, workspace=workspace)
 
         # Handle uploaded transcript file if sent via multipart form
         if 'transcript_file' in request.FILES:
@@ -389,6 +395,47 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 s.save()
                 return Response(s.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=False, methods=['post'], url_path='seed-demo')
+    def seed_demo(self, request):
+        """Seed a rich demo meeting for the requested user."""
+        from django.utils import timezone
+        user_email = request.data.get('user_email') or 'bhawya@scaler.com'
+        workspace = request.data.get('workspace') or 'Scaler AI Labs'
+
+        now = timezone.now()
+        m = Meeting.objects.create(
+            title="Q3 Product Roadmap & AI Intelligence Review",
+            meeting_date=now,
+            duration_seconds=1800,
+            participants=["Sarah Connor (Head of Product)", "Alex Rivera (Lead Architect)", "Priya Sharma (Senior PM)"],
+            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+            meeting_type="Product",
+            user_email=user_email,
+            workspace=workspace,
+            status="processed"
+        )
+        TranscriptSegment.objects.create(
+            meeting=m, speaker_name="Sarah Connor (Head of Product)", start_time=0.0, end_time=18.0, text="Good morning team! Today we are reviewing our Q3 product roadmap with a heavy focus on the new Groq AI intelligence features.", sequence_order=0
+        )
+        TranscriptSegment.objects.create(
+            meeting=m, speaker_name="Alex Rivera (Lead Architect)", start_time=19.5, end_time=45.0, text="From an architectural perspective, Groq's low-latency inference allows us to generate real-time meeting summaries in sub-second response times.", sequence_order=1
+        )
+        TranscriptSegment.objects.create(
+            meeting=m, speaker_name="Priya Sharma (Senior PM)", start_time=46.0, end_time=75.0, text="I will finalize the PRD for dashboard filters and share it with the team by Thursday afternoon.", sequence_order=2
+        )
+        Summary.objects.create(
+            meeting=m,
+            overview="The team reviewed product milestones and confirmed low-latency Groq AI integration with sub-second response times.",
+            key_points=["Groq AI inference confirmed with sub-500ms response times", "PRD finalized for release by Thursday"],
+            keywords=["Roadmap", "Groq AI", "Architecture", "PRD"]
+        )
+        ActionItem.objects.create(meeting=m, task="Finalize PRD and share with engineering team", assignee="Priya Sharma", due_date="Thursday")
+        Chapter.objects.create(meeting=m, title="1. Product Kickoff", start_time=0.0, end_time=18.0, summary="Opening review")
+        Chapter.objects.create(meeting=m, title="2. Architecture & AI Sync", start_time=19.5, end_time=75.0, summary="Groq AI and latency discussion")
+
+        serializer = MeetingDetailSerializer(m)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class ActionItemViewSet(viewsets.ModelViewSet):
     """CRUD operations for action items, including fast status toggle."""
@@ -531,15 +578,20 @@ class AnalyticsView(APIView):
                 "action_items_completed": meeting.action_items.filter(completed=True).count(),
             })
 
-        # Global aggregate stats
+        # Global aggregate stats (optionally scoped to user)
+        user_email = request.query_params.get('user_email', None)
         all_meetings = Meeting.objects.all()
+        if user_email:
+            all_meetings = all_meetings.filter(user_email__iexact=user_email)
+
         total_meetings = all_meetings.count()
         total_seconds = sum(m.duration_seconds for m in all_meetings)
-        total_action_items = ActionItem.objects.count()
-        completed_action_items = ActionItem.objects.filter(completed=True).count()
+        meeting_ids = all_meetings.values_list('id', flat=True)
+        total_action_items = ActionItem.objects.filter(meeting_id__in=meeting_ids).count()
+        completed_action_items = ActionItem.objects.filter(meeting_id__in=meeting_ids, completed=True).count()
 
         # Collect top recurring keywords
-        summaries = Summary.objects.all()
+        summaries = Summary.objects.filter(meeting_id__in=meeting_ids)
         all_keywords = []
         for s in summaries:
             if isinstance(s.keywords, list):

@@ -11,6 +11,8 @@ class Meeting(models.Model):
     participants = models.JSONField(default=list, help_text="List of participant names or objects")
     audio_url = models.CharField(max_length=500, blank=True, default="")
     meeting_type = models.CharField(max_length=100, default="General", db_index=True)
+    user_email = models.CharField(max_length=255, default="bhawya@scaler.com", db_index=True)
+    workspace = models.CharField(max_length=255, default="Scaler AI Labs", db_index=True)
     status = models.CharField(
         max_length=50,
         default="processed",

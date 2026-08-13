@@ -118,6 +118,8 @@ class MeetingListSerializer(serializers.ModelSerializer):
             'participants',
             'audio_url',
             'meeting_type',
+            'user_email',
+            'workspace',
             'status',
             'transcript_count',
             'action_items_count',
@@ -151,6 +153,8 @@ class MeetingDetailSerializer(serializers.ModelSerializer):
             'participants',
             'audio_url',
             'meeting_type',
+            'user_email',
+            'workspace',
             'status',
             'transcript_segments',
             'summary',
@@ -165,9 +169,25 @@ class MeetingDetailSerializer(serializers.ModelSerializer):
 
 
 class MeetingCreateSerializer(serializers.ModelSerializer):
-    """Serializer for creating a meeting with optional raw transcript content."""
-    transcript_content = serializers.CharField(write_only=True, required=False, allow_blank=True)
-    auto_generate_summary = serializers.BooleanField(write_only=True, required=False, default=True)
+    """Serializer for uploading / creating a new meeting with raw transcript text."""
+    transcript_content = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        help_text="Raw transcript content or formatted timestamps to parse"
+    )
+    transcript_text = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        help_text="Raw transcript text or formatted timestamps to parse"
+    )
+    auto_generate_summary = serializers.BooleanField(
+        write_only=True,
+        default=True,
+        required=False,
+        help_text="Automatically run Groq LLM summary pipeline on creation"
+    )
 
     class Meta:
         model = Meeting
@@ -179,8 +199,11 @@ class MeetingCreateSerializer(serializers.ModelSerializer):
             'participants',
             'audio_url',
             'meeting_type',
+            'user_email',
+            'workspace',
             'status',
             'transcript_content',
+            'transcript_text',
             'auto_generate_summary',
             'created_at',
         ]
