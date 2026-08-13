@@ -35,6 +35,43 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
     router.push('/login');
   };
 
+  const handleThemeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const doc = document as any;
+    if (!doc.startViewTransition) {
+      toggleTheme();
+      return;
+    }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = doc.startViewTransition(() => {
+      toggleTheme();
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+      
+      document.documentElement.animate(
+        {
+          clipPath: theme === 'light' ? clipPath : [...clipPath].reverse(),
+        },
+        {
+          duration: 450,
+          easing: 'ease-in-out',
+          pseudoElement: theme === 'light' ? '::view-transition-new(root)' : '::view-transition-old(root)',
+        }
+      );
+    });
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-line bg-white px-6 dark:border-surface-800 dark:bg-surface-900">
       {/* Global Search Bar (Trigger for Cmd+K palette) */}
@@ -81,7 +118,7 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
 
         {/* Theme Toggle */}
         <button
-          onClick={toggleTheme}
+          onClick={handleThemeToggle}
           aria-label="Toggle theme"
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-white text-ink-600 hover:bg-surface-sunken dark:border-surface-700 dark:bg-surface-800"
         >

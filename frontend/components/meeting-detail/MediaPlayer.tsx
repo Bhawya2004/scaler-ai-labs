@@ -57,6 +57,14 @@ export function MediaPlayer({ audioUrl, totalDuration }: MediaPlayerProps) {
     }
   }, [seekTarget, isPlaying, setIsPlaying]);
 
+  // Synchronize volume and mute states to the native audio element
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+      audioRef.current.volume = volume;
+    }
+  }, [isMuted, volume]);
+
   // Handle play / pause toggle
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -116,7 +124,7 @@ export function MediaPlayer({ audioUrl, totalDuration }: MediaPlayerProps) {
       {/* Hidden native audio element */}
       <audio
         ref={audioRef}
-        src={audioUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"}
+        src={audioUrl || "https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3"}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => setIsPlaying(false)}

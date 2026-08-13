@@ -31,7 +31,7 @@ class Command(BaseCommand):
             meeting_date=now - timedelta(hours=3),
             duration_seconds=2100,  # 35 mins
             participants=["Sarah Connor (Head of Product)", "Alex Rivera (Lead Architect)", "Priya Sharma (Senior PM)", "David Kim (ML Engineer)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3",
             meeting_type="Product",
             status="processed"
         )
@@ -92,7 +92,7 @@ class Command(BaseCommand):
             meeting_date=now - timedelta(days=1, hours=2),
             duration_seconds=1800,  # 30 mins
             participants=["Elena Rostova (Account Executive)", "Marcus Vance (CISO, Apex Corp)", "Jason Lee (Security Engineer)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample2.mp3",
             meeting_type="Sales",
             status="processed"
         )
@@ -146,7 +146,7 @@ class Command(BaseCommand):
             meeting_date=now - timedelta(days=2, hours=4),
             duration_seconds=1500,  # 25 mins
             participants=["Maya Lin (Design Lead)", "Liam Foster (Frontend Lead)", "Chloe Zhang (UI Engineer)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3",
             meeting_type="Design",
             status="processed"
         )
@@ -196,7 +196,7 @@ class Command(BaseCommand):
             meeting_date=now - timedelta(days=3, hours=5),
             duration_seconds=2700,  # 45 mins
             participants=["Alex Rivera (Lead Architect)", "Tariq Mansoor (DevOps Engineer)", "Nina Patel (Backend Engineer)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample2.mp3",
             meeting_type="Engineering",
             status="processed"
         )
@@ -243,7 +243,7 @@ class Command(BaseCommand):
             meeting_date=now - timedelta(days=4, hours=1),
             duration_seconds=1200,  # 20 mins
             participants=["Rachel Green (CEO)", "Sarah Connor (Head of Product)", "Elena Rostova (Account Executive)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3",
             meeting_type="Leadership",
             status="processed"
         )
