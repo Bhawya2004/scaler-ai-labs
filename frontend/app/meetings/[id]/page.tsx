@@ -146,7 +146,12 @@ function MeetingDetailContent() {
 
       {/* Speaker Talk Time Analytics Bar */}
       {analytics && analytics.talk_time_breakdown && (
-        <TalkTimeAnalytics talkTimeBreakdown={analytics.talk_time_breakdown} />
+        <TalkTimeAnalytics 
+          talkTimeBreakdown={analytics.talk_time_breakdown} 
+          dominanceScore={analytics.dominance_score}
+          meetingBalance={analytics.meeting_balance}
+          conversationFlow={analytics.conversation_flow}
+        />
       )}
 
       {/* Two-Column Split Layout: Transcript (Left) + Intelligence Panels (Right) */}

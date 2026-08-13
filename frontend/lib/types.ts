@@ -150,4 +150,11 @@ export interface MeetingAnalytics {
   }[];
   action_items_total: number;
   action_items_completed: number;
+  dominance_score: number;
+  meeting_balance: string;
+  conversation_flow: {
+    from_speaker: string;
+    to_speaker: string;
+    count: number;
+  }[];
 }
