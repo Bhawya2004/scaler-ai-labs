@@ -408,7 +408,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             meeting_date=now,
             duration_seconds=1800,
             participants=["Sarah Connor (Head of Product)", "Alex Rivera (Lead Architect)", "Priya Sharma (Senior PM)"],
-            audio_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+            audio_url="https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3",
             meeting_type="Product",
             user_email=user_email,
             workspace=workspace,
@@ -568,6 +568,38 @@ class AnalyticsView(APIView):
                 for speaker, sec in sorted(speaker_durations.items(), key=lambda x: x[1], reverse=True)
             ]
 
+            # Calculate Dominance & Balance Score
+            dominance_score = 0.0
+            meeting_balance = "Balanced"
+            if talk_time_breakdown:
+                dominance_score = talk_time_breakdown[0]["percentage"]
+                if dominance_score > 70.0:
+                    meeting_balance = "Monopolized (One Speaker > 70%)"
+                elif dominance_score > 55.0:
+                    meeting_balance = "Moderately Dominant"
+                else:
+                    meeting_balance = "Highly Balanced"
+
+            # Calculate Conversation Flow Matrix (who spoke after whom)
+            ordered_segments = segments.order_by('start_time')
+            interactions = {}
+            previous_speaker = None
+            for s in ordered_segments:
+                current_speaker = s.speaker_name or "Unknown"
+                if previous_speaker and previous_speaker != current_speaker:
+                    key = f"{previous_speaker} -> {current_speaker}"
+                    interactions[key] = interactions.get(key, 0) + 1
+                previous_speaker = current_speaker
+
+            interaction_list = [
+                {
+                    "from_speaker": k.split(" -> ")[0],
+                    "to_speaker": k.split(" -> ")[1],
+                    "count": count
+                }
+                for k, count in sorted(interactions.items(), key=lambda x: x[1], reverse=True)
+            ]
+
             return Response({
                 "meeting_id": str(meeting.id),
                 "meeting_title": meeting.title,
@@ -576,6 +608,9 @@ class AnalyticsView(APIView):
                 "talk_time_breakdown": talk_time_breakdown,
                 "action_items_total": meeting.action_items.count(),
                 "action_items_completed": meeting.action_items.filter(completed=True).count(),
+                "dominance_score": dominance_score,
+                "meeting_balance": meeting_balance,
+                "conversation_flow": interaction_list,
             })
 
         # Global aggregate stats (optionally scoped to user)
