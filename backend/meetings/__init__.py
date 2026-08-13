@@ -1,0 +1,1 @@
+"""Meetings application package."""
