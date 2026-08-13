@@ -183,12 +183,19 @@ class MeetingViewSet(viewsets.ModelViewSet):
         detail_serializer = MeetingDetailSerializer(meeting)
         return Response(detail_serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'], url_path='generate-summary')
+    @action(detail=True, methods=['get', 'post'], url_path='generate-summary')
     def generate_summary(self, request, pk=None):
-        """Regenerate or generate Groq AI summary, action items, and chapters."""
+        """Get existing summary (GET) or generate/regenerate Groq AI summary, action items, and chapters (POST)."""
         meeting = self.get_object()
-        segments = meeting.transcript_segments.all()
 
+        if request.method == 'GET':
+            if hasattr(meeting, 'summary') and meeting.summary:
+                return Response(SummarySerializer(meeting.summary).data)
+            return Response({
+                "detail": "No summary generated yet. Send a POST request to generate an AI summary."
+            })
+
+        segments = meeting.transcript_segments.all()
         if not segments.exists():
             return Response(
                 {"detail": "Cannot generate summary for a meeting without transcripts."},
@@ -218,7 +225,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         )
 
         # Add any newly extracted action items if user requested
-        replace_action_items = request.data.get('replace_action_items', False)
+        replace_action_items = request.data.get('replace_action_items', False) if request.data else False
         if replace_action_items:
             meeting.action_items.all().delete()
 
@@ -247,15 +254,39 @@ class MeetingViewSet(viewsets.ModelViewSet):
         detail_serializer = MeetingDetailSerializer(meeting)
         return Response(detail_serializer.data)
 
-    @action(detail=True, methods=['post'], url_path='ask')
+    @action(detail=True, methods=['get', 'post'], url_path='ask', serializer_class=AskQuestionRequestSerializer)
     def ask_ai(self, request, pk=None):
-        """Ask a question about this meeting using Groq LLM with context grounding."""
+        """Ask a question about this meeting using Groq LLM with context grounding (POST) or view chat history (GET)."""
         meeting = self.get_object()
-        req_serializer = AskQuestionRequestSerializer(data=request.data)
-        req_serializer.is_valid(raise_exception=True)
 
-        question = req_serializer.validated_data['question']
-        save_to_history = req_serializer.validated_data.get('save_to_history', True)
+        if request.method == 'GET':
+            # Support asking question via GET query param ?question=... or ?q=...
+            query_q = request.query_params.get('question') or request.query_params.get('q')
+            if not query_q:
+                # Return chat history
+                chats = meeting.chat_messages.all()
+                return Response({
+                    "meeting_id": str(meeting.id),
+                    "meeting_title": meeting.title,
+                    "total_messages": chats.count(),
+                    "history": ChatMessageSerializer(chats, many=True).data,
+                    "usage": "To ask a question, send a POST request with JSON body {'question': 'your question'} or pass ?question=... in URL."
+                })
+            question = query_q
+            save_to_history = True
+        else:
+            req_serializer = AskQuestionRequestSerializer(data=request.data)
+            if not req_serializer.is_valid():
+                # Fallback: check query params if body was empty
+                query_q = request.query_params.get('question') or request.query_params.get('q')
+                if query_q:
+                    question = query_q
+                    save_to_history = True
+                else:
+                    return Response(req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                question = req_serializer.validated_data['question']
+                save_to_history = req_serializer.validated_data.get('save_to_history', True)
 
         segments = meeting.transcript_segments.all()
         segment_dicts = [
@@ -291,7 +322,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 "question": question,
                 "answer": answer,
                 "message_id": str(assistant_msg.id),
-                "created_at": assistant_msg.created_at
+                "created_at": assistant_msg.created_at.isoformat()
             })
 
         return Response({

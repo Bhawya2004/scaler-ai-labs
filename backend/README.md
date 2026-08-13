@@ -114,6 +114,10 @@ python manage.py test
 
 ## 📡 REST API Reference
 
+### Health & Keepalive Endpoints (Render / UptimeRobot)
+- `GET /health/` or `GET /healthz/` or `GET /api/health/` — Lightweight health check endpoint that tests the SQLite database connection and returns server uptime (`200 OK`).
+  - Perfect for **UptimeRobot** (pinging every 5-14 minutes) to prevent Render free-tier instances from spinning down or sleeping.
+
 ### Meetings API
 - `GET /api/v1/meetings/` — List meetings with search (`?search=`), filtering (`?type=`, `?participant=`, `?start_date=`), and sorting (`?ordering=-meeting_date`).
 - `GET /api/v1/meetings/{id}/` — Retrieve full meeting details (transcripts, summary, chapters, action items, comments).

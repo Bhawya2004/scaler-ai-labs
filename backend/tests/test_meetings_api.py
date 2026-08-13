@@ -76,6 +76,12 @@ class MeetingAPITestCase(TestCase):
         self.assertEqual(self.meeting.title, "Updated Sprint Planning Sync")
         self.assertEqual(self.meeting.meeting_type, "Product")
 
+    def test_health_check(self):
+        response = self.client.get('/health/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['status'], "healthy")
+        self.assertEqual(response.json()['database'], "ok")
+
     def test_delete_meeting(self):
         url = reverse('meeting-detail', kwargs={'pk': str(self.meeting.id)})
         response = self.client.delete(url)
