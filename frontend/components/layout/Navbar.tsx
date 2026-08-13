@@ -36,18 +36,18 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-surface-200 bg-white/80 px-6 backdrop-blur-md dark:border-surface-800 dark:bg-surface-900/80">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-line bg-white px-6 dark:border-surface-800 dark:bg-surface-900">
       {/* Global Search Bar (Trigger for Cmd+K palette) */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="flex h-10 w-80 items-center justify-between rounded-xl border border-surface-200 bg-surface-50 px-3.5 text-sm text-surface-500 shadow-xs transition-all hover:border-brand-400 hover:bg-white hover:text-surface-800 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-300 dark:hover:border-brand-500 dark:hover:bg-surface-750 dark:hover:text-white"
+          className="flex h-9 w-80 items-center justify-between rounded-xl border border-line bg-surface-sunken px-3 text-xs text-ink-600 transition-all hover:bg-white hover:text-ink-900 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-300"
         >
           <div className="flex items-center gap-2.5">
-            <Search className="h-4 w-4 text-surface-400 dark:text-surface-400" />
+            <Search className="h-3.5 w-3.5 text-ink-400" />
             <span className="truncate">Search transcripts, notes, meetings...</span>
           </div>
-          <kbd className="hidden rounded-md border border-surface-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-surface-400 shadow-2xs sm:inline-block dark:border-surface-700 dark:bg-surface-700 dark:text-surface-200">
+          <kbd className="hidden rounded-md border border-line bg-white px-1.5 py-0.5 text-[9px] font-bold text-ink-400 sm:inline-block dark:border-surface-700 dark:bg-surface-700">
             ⌘K
           </kbd>
         </button>
@@ -55,13 +55,13 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
         {/* Fred AI Assistant Live Indicator */}
         <button
           onClick={() => setComingSoonFeature('Fred Live Meeting Assistant')}
-          className="hidden items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 transition-all hover:bg-brand-100 md:flex dark:border-brand-800 dark:bg-brand-950 dark:text-brand-300"
+          className="hidden items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[11px] font-bold text-brand-600 transition-all hover:bg-brand-100 md:flex dark:border-brand-800 dark:bg-brand-950"
         >
-          <span className="relative flex h-2 w-2">
+          <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600"></span>
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-500"></span>
           </span>
-          <Sparkles className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
+          <Sparkles className="h-3 w-3 text-brand-500" />
           <span>Fred Bot: Ready</span>
         </button>
       </div>
@@ -72,7 +72,7 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
         {onOpenCreateModal && (
           <button
             onClick={onOpenCreateModal}
-            className="flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-brand-600/20 transition-all hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-600/30 active:scale-95"
+            className="flex items-center gap-1.5 rounded-xl bg-brand-500 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-brand-600 transition-all active:scale-95"
           >
             <Plus className="h-4 w-4" />
             <span>Upload Meeting</span>
@@ -83,12 +83,12 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-surface-200 bg-white text-surface-600 transition-all hover:border-surface-300 hover:bg-surface-50 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-300 dark:hover:border-surface-600 dark:hover:text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-white text-ink-600 hover:bg-surface-sunken dark:border-surface-700 dark:bg-surface-800"
         >
           {theme === 'dark' ? (
-            <Sun className="h-4 w-4 text-amber-400" />
+            <Sun className="h-4 w-4 text-accent-amber" />
           ) : (
-            <Moon className="h-4 w-4 text-surface-600" />
+            <Moon className="h-4 w-4 text-ink-600" />
           )}
         </button>
 
@@ -97,18 +97,17 @@ export function Navbar({ onOpenCreateModal }: NavbarProps) {
           <div className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2.5 rounded-xl border border-transparent p-1.5 transition-all hover:bg-surface-100 dark:hover:bg-surface-800"
+              className="flex items-center gap-2 rounded-xl border border-transparent p-1 transition-all hover:bg-surface-sunken dark:hover:bg-surface-800"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 font-bold text-white text-xs shadow-xs">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 font-bold text-brand-600 text-xs">
                 {user.avatarInitials || 'BG'}
               </div>
               <div className="hidden flex-col text-left lg:flex">
-                <span className="text-xs font-bold text-surface-900 dark:text-white">
+                <span className="text-xs font-bold text-ink-900 dark:text-white">
                   {user.name}
                 </span>
-                <span className="text-[11px] text-surface-400">{user.workspace}</span>
               </div>
-              <ChevronDown className="h-3.5 w-3.5 text-surface-400" />
+              <ChevronDown className="h-3.5 w-3.5 text-ink-400" />
             </button>
 
             {/* Profile Dropdown Menu */}

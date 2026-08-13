@@ -84,7 +84,7 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  theme: 'dark', // default to dark per user screenshot
+  theme: 'light', // default to light mode
   setTheme: (theme) => set({ theme }),
   toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
   isCommandPaletteOpen: false,
@@ -93,7 +93,7 @@ export const useAppStore = create<AppState>((set) => ({
   setViewMode: (viewMode) => set({ viewMode }),
   comingSoonFeature: null,
   setComingSoonFeature: (comingSoonFeature) => set({ comingSoonFeature }),
-  user: DEFAULT_USER,
+  user: null, // default to logged out so they land on /login
   login: (user) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('fireflies_user', JSON.stringify(user));

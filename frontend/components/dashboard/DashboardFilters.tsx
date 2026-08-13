@@ -31,13 +31,13 @@ export function DashboardFilters({
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* Search Bar */}
         <div className="relative min-w-[260px] flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
           <input
             type="text"
             placeholder="Filter meetings by title or participant..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="h-10 w-full rounded-xl border border-surface-200 bg-white pl-10 pr-4 text-sm text-surface-900 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:outline-hidden dark:border-surface-800 dark:bg-surface-900 dark:text-white dark:focus:border-brand-400"
+            className="h-10 w-full rounded-xl border border-line bg-white pl-10 pr-4 text-xs text-ink-900 placeholder:text-ink-400 transition-all focus:border-brand-500 focus:outline-hidden dark:border-surface-850 dark:bg-surface-900 dark:text-white"
           />
         </div>
 
@@ -45,29 +45,29 @@ export function DashboardFilters({
         <div className="flex items-center gap-2.5">
           {/* Sort Dropdown */}
           <div className="relative flex items-center">
-            <ArrowUpDown className="absolute left-3 h-3.5 w-3.5 text-surface-400 dark:text-surface-300 pointer-events-none" />
+            <ArrowUpDown className="absolute left-3 h-3.5 w-3.5 text-ink-400 pointer-events-none" />
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              className="h-10 appearance-none rounded-xl border border-surface-200 bg-white pl-9 pr-8 text-xs font-semibold text-surface-800 transition-all focus:border-brand-500 focus:outline-hidden dark:border-surface-700 dark:bg-surface-800 dark:text-white"
+              className="h-10 appearance-none rounded-xl border border-line bg-white pl-9 pr-8 text-xs font-semibold text-ink-900 transition-all focus:border-brand-500 focus:outline-hidden dark:border-surface-700 dark:bg-surface-800 dark:text-white"
             >
-              <option value="-meeting_date" className="dark:bg-surface-800 dark:text-white">Most Recent</option>
-              <option value="meeting_date" className="dark:bg-surface-800 dark:text-white">Oldest</option>
-              <option value="-duration_seconds" className="dark:bg-surface-800 dark:text-white">Longest Duration</option>
-              <option value="duration_seconds" className="dark:bg-surface-800 dark:text-white">Shortest Duration</option>
-              <option value="title" className="dark:bg-surface-800 dark:text-white">Title (A-Z)</option>
+              <option value="-meeting_date">Most Recent</option>
+              <option value="meeting_date">Oldest</option>
+              <option value="-duration_seconds">Longest Duration</option>
+              <option value="duration_seconds">Shortest Duration</option>
+              <option value="title">Title (A-Z)</option>
             </select>
           </div>
 
           {/* Grid / Table View Toggle */}
-          <div className="flex rounded-xl border border-surface-200 bg-surface-100 p-1 dark:border-surface-800 dark:bg-surface-900">
+          <div className="flex rounded-xl border border-line bg-surface-sunken p-1 dark:border-surface-800 dark:bg-surface-900">
             <button
               onClick={() => setViewMode('grid')}
               aria-label="Grid view"
               className={`rounded-lg p-1.5 transition-all ${
                 viewMode === 'grid'
-                  ? 'bg-white text-brand-600 shadow-xs dark:bg-surface-800 dark:text-brand-400 font-semibold'
-                  : 'text-surface-500 hover:text-surface-800 dark:text-surface-400'
+                  ? 'bg-white text-brand-600 shadow-[0_1px_2px_rgba(31,32,51,0.04)] font-bold'
+                  : 'text-ink-600 hover:text-ink-900'
               }`}
             >
               <LayoutGrid className="h-4 w-4" />
@@ -77,8 +77,8 @@ export function DashboardFilters({
               aria-label="Table view"
               className={`rounded-lg p-1.5 transition-all ${
                 viewMode === 'table'
-                  ? 'bg-white text-brand-600 shadow-xs dark:bg-surface-800 dark:text-brand-400 font-semibold'
-                  : 'text-surface-500 hover:text-surface-800 dark:text-surface-400'
+                  ? 'bg-white text-brand-600 shadow-[0_1px_2px_rgba(31,32,51,0.04)] font-bold'
+                  : 'text-ink-600 hover:text-ink-900'
               }`}
             >
               <List className="h-4 w-4" />
@@ -97,8 +97,8 @@ export function DashboardFilters({
               onClick={() => onTypeChange(type)}
               className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 isSelected
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'border border-surface-200 bg-white text-surface-700 hover:border-surface-300 hover:bg-surface-50 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-100 dark:hover:border-surface-600 dark:hover:bg-surface-700 dark:hover:text-white'
+                  ? 'bg-brand-500 text-white shadow-sm'
+                  : 'border border-line bg-white text-ink-600 hover:bg-surface-sunken hover:text-ink-900 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-100'
               }`}
             >
               {type}

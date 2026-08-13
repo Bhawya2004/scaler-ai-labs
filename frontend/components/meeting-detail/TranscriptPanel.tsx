@@ -88,9 +88,9 @@ export function TranscriptPanel({ segments, onAddComment }: TranscriptPanelProps
   };
 
   return (
-    <div className="flex flex-col h-full rounded-2xl border border-surface-200 bg-white shadow-xs dark:border-surface-800 dark:bg-surface-900">
+    <div className="flex flex-col h-full rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(31,32,51,0.04)] dark:border-surface-800 dark:bg-surface-900">
       {/* Search Header */}
-      <div className="p-4 border-b border-surface-100 dark:border-surface-800">
+      <div className="p-4 border-b border-line dark:border-surface-800">
         <TranscriptSearch
           query={searchQuery}
           onQueryChange={(q) => {

@@ -11,36 +11,24 @@ interface DashboardStatsProps {
 export function DashboardStats({ analytics }: DashboardStatsProps) {
   const stats = [
     {
-      label: 'Meetings Transcribed',
+      label: 'Meetings Indexed',
       value: analytics ? analytics.total_meetings : 0,
       icon: Mic,
-      gradient: 'from-purple-500 to-indigo-600',
-      bgLight: 'bg-purple-50 dark:bg-purple-950/40',
-      borderLight: 'border-purple-200 dark:border-purple-900/50',
     },
     {
       label: 'Hours Recorded',
       value: analytics ? `${analytics.total_hours}h` : '0h',
       icon: Clock,
-      gradient: 'from-blue-500 to-sky-600',
-      bgLight: 'bg-blue-50 dark:bg-blue-950/40',
-      borderLight: 'border-blue-200 dark:border-blue-900/50',
     },
     {
       label: 'Action Items Done',
       value: analytics ? `${analytics.completed_action_items}/${analytics.total_action_items}` : '0/0',
       icon: CheckSquare,
-      gradient: 'from-emerald-500 to-teal-600',
-      bgLight: 'bg-emerald-50 dark:bg-emerald-950/40',
-      borderLight: 'border-emerald-200 dark:border-emerald-900/50',
     },
     {
       label: 'AI Automation Rate',
       value: analytics && analytics.total_action_items > 0 ? `${analytics.action_completion_rate}%` : '100%',
       icon: Sparkles,
-      gradient: 'from-amber-500 to-orange-600',
-      bgLight: 'bg-amber-50 dark:bg-amber-950/40',
-      borderLight: 'border-amber-200 dark:border-amber-900/50',
     },
   ];
 
@@ -51,15 +39,15 @@ export function DashboardStats({ analytics }: DashboardStatsProps) {
         return (
           <div
             key={idx}
-            className={`flex items-center justify-between rounded-2xl border ${item.borderLight} ${item.bgLight} p-4 shadow-xs transition-all hover:shadow-md`}
+            className="flex items-center justify-between rounded-xl border border-line bg-white p-4 shadow-[0_1px_2px_rgba(31,32,51,0.04)] dark:border-surface-800 dark:bg-surface-900"
           >
             <div>
-              <p className="text-xs font-medium text-surface-500 dark:text-surface-400">{item.label}</p>
-              <h3 className="mt-1 font-heading text-2xl font-bold text-surface-900 dark:text-white">
+              <p className="text-[11px] font-bold text-ink-600 dark:text-surface-400 uppercase tracking-wider">{item.label}</p>
+              <h3 className="mt-1 font-heading text-2xl font-bold text-ink-900 dark:text-white">
                 {item.value}
               </h3>
             </div>
-            <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr ${item.gradient} text-white shadow-md`}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-950 dark:text-brand-400">
               <Icon className="h-5 w-5" />
             </div>
           </div>
