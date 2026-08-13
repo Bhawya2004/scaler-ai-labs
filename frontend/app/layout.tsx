@@ -82,7 +82,7 @@ export default function RootLayout({
             <Sidebar />
 
             {/* Main Layout Container */}
-            <div className="flex flex-1 flex-col pl-64 min-w-0">
+            <div className="flex flex-1 flex-col pl-16 min-w-0">
               <Navbar onOpenCreateModal={() => setCreateModalOpen(true)} />
               <main className="flex-1 p-6 md:p-8">{children}</main>
             </div>

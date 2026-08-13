@@ -12,29 +12,43 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#5B45E0', // Fireflies signature purple
-          700: '#4C38C9',
-          800: '#3c2e9b',
-          900: '#251b68',
+          50: '#F1EFFE',
+          100: '#E1DDFD',
+          200: '#C4B5FD',
+          300: '#A78BFA',
+          400: '#8B5CF6',
+          500: '#5B4FE9', // Primary Brand Purple
+          600: '#4A3FD1', // Primary Hover
+          700: '#3C30B8',
+          800: '#2E229B',
+          900: '#1E1268',
+          950: '#0C0A2E',
         },
         surface: {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
+          50: '#FFFFFF',      // Cards, white
+          muted: '#F7F7FB',   // Page background
+          sunken: '#F1F0F8',  // Sidebar background, hover
+          100: '#F1F0F8',
+          200: '#E7E6F1',
           300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
+          400: '#9295AC',
+          500: '#5C5E76',
           600: '#475569',
-          700: '#334155',
+          700: '#1F2033',
           800: '#1E293B',
           900: '#0F172A',
           950: '#090D16',
+        },
+        ink: {
+          900: '#1F2033', // Primary Text
+          600: '#5C5E76', // Secondary Text
+          400: '#9295AC', // Muted Text
+        },
+        line: '#E7E6F1', // Default hairline border
+        accent: {
+          amber: '#F0A94E', // Warning / processing
+          green: '#2FAE6B', // Completed
+          red: '#E85C5C',   // Destructive
         }
       },
       fontFamily: {

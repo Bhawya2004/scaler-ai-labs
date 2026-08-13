@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Play, Clock, Calendar, CheckSquare, Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, Video } from 'lucide-react';
 import { MeetingListItem } from '@/lib/types';
-import { formatDuration, formatMeetingDate, getSpeakerStyle, getInitials } from '@/lib/utils';
+import { formatMeetingDate } from '@/lib/utils';
 
 interface MeetingTableProps {
   meetings: MeetingListItem[];
@@ -14,125 +14,58 @@ interface MeetingTableProps {
 
 export function MeetingTable({ meetings, onEdit, onDelete }: MeetingTableProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-xs dark:border-surface-800 dark:bg-surface-900">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
-          <thead className="border-b border-surface-200 bg-surface-50 text-[11px] font-semibold text-surface-500 uppercase dark:border-surface-800 dark:bg-surface-950 dark:text-surface-400">
-            <tr>
-              <th className="px-5 py-3.5">Meeting Name</th>
-              <th className="px-4 py-3.5">Type</th>
-              <th className="px-4 py-3.5">Date & Time</th>
-              <th className="px-4 py-3.5">Duration</th>
-              <th className="px-4 py-3.5">Participants</th>
-              <th className="px-4 py-3.5">Action Items</th>
-              <th className="px-5 py-3.5 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-surface-100 dark:divide-surface-800">
-            {meetings.map((meeting) => {
-              const participantsList = Array.isArray(meeting.participants)
-                ? meeting.participants
-                : [];
+    <div className="flex flex-col gap-2.5 w-full">
+      {meetings.map((meeting) => {
+        return (
+          <div
+            key={meeting.id}
+            className="group flex items-center justify-between rounded-xl border border-line bg-white p-3 hover:bg-surface-sunken transition-all cursor-pointer dark:border-surface-800 dark:bg-surface-900"
+          >
+            <Link href={`/meetings/${meeting.id}`} className="flex items-center gap-3.5 flex-1 min-w-0">
+              {/* Pink Fireflies Butterfly Logo Mark Icon on Left */}
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-pink-500 to-rose-600 shadow-xs">
+                {/* Custom Butterfly shape */}
+                <div className="relative flex h-4.5 w-4.5 items-center justify-center">
+                  <span className="absolute left-0.5 top-0.5 h-2 w-2 rounded-full bg-white opacity-95" />
+                  <span className="absolute right-0.5 top-0.5 h-2 w-2 rounded-full bg-white opacity-80" />
+                  <span className="absolute left-1.5 bottom-0.5 h-1.5 w-1.5 rounded-full bg-white opacity-70" />
+                </div>
+              </div>
+              
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-ink-900 dark:text-white group-hover:text-brand-500 transition-colors truncate">
+                  {meeting.title}
+                </span>
+                <span className="text-[10px] text-ink-400 mt-0.5 font-bold">
+                  {formatMeetingDate(meeting.meeting_date)}
+                </span>
+              </div>
+            </Link>
 
-              return (
-                <tr
-                  key={meeting.id}
-                  className="group transition-colors hover:bg-surface-50/80 dark:hover:bg-surface-800/50"
-                >
-                  {/* Title */}
-                  <td className="px-5 py-4">
-                    <Link
-                      href={`/meetings/${meeting.id}`}
-                      className="font-medium text-surface-900 transition-colors group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-400 font-semibold"
-                    >
-                      {meeting.title}
-                    </Link>
-                  </td>
-
-                  {/* Type */}
-                  <td className="px-4 py-4">
-                    <span className="rounded-md bg-brand-50 px-2 py-0.5 text-[11px] font-semibold text-brand-700 dark:bg-brand-950 dark:text-brand-300">
-                      {meeting.meeting_type || 'General'}
-                    </span>
-                  </td>
-
-                  {/* Date */}
-                  <td className="px-4 py-4 text-surface-500 whitespace-nowrap">
-                    {formatMeetingDate(meeting.meeting_date)}
-                  </td>
-
-                  {/* Duration */}
-                  <td className="px-4 py-4 text-surface-600 dark:text-surface-300 font-medium whitespace-nowrap">
-                    {formatDuration(meeting.duration_seconds)}
-                  </td>
-
-                  {/* Participants Avatar Stack */}
-                  <td className="px-4 py-4">
-                    <div className="flex items-center -space-x-1.5">
-                      {participantsList.slice(0, 3).map((name, i) => {
-                        const style = getSpeakerStyle(name);
-                        return (
-                          <div
-                            key={i}
-                            title={name}
-                            className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold border-2 border-white dark:border-surface-900 ${style.bg} ${style.text}`}
-                          >
-                            {getInitials(name)}
-                          </div>
-                        );
-                      })}
-                      {participantsList.length > 3 && (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-surface-200 text-[10px] font-bold text-surface-600 border-2 border-white dark:bg-surface-800 dark:text-surface-300 dark:border-surface-900">
-                          +{participantsList.length - 3}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Action Items */}
-                  <td className="px-4 py-4">
-                    {meeting.action_items_count > 0 ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                        <CheckSquare className="h-3 w-3" />
-                        {meeting.action_items_count}
-                      </span>
-                    ) : (
-                      <span className="text-surface-400">—</span>
-                    )}
-                  </td>
-
-                  {/* Action Buttons */}
-                  <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <Link
-                        href={`/meetings/${meeting.id}`}
-                        className="rounded-lg p-1.5 text-surface-400 hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-950 dark:hover:text-brand-300"
-                        title="Open Meeting Room"
-                      >
-                        <Play className="h-4 w-4" />
-                      </Link>
-                      <button
-                        onClick={() => onEdit(meeting)}
-                        className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 hover:text-surface-700 dark:hover:bg-surface-800 dark:hover:text-surface-200"
-                        title="Edit Metadata"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => onDelete(meeting)}
-                        className="rounded-lg p-1.5 text-surface-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
-                        title="Delete Meeting"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+            {/* Actions / Options on the Right */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onEdit(meeting);
+                }}
+                className="opacity-0 group-hover:opacity-100 rounded-lg p-1.5 text-ink-600 hover:bg-white dark:hover:bg-surface-800 transition-opacity"
+              >
+                <Edit2 className="h-3.5 w-3.5" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete(meeting);
+                }}
+                className="opacity-0 group-hover:opacity-100 rounded-lg p-1.5 text-accent-red hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-opacity"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
